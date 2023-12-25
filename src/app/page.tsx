@@ -41,6 +41,7 @@ export default function Home() {
 		}
 
 		const question = query.trim();
+		console.log("question++++++", question);
 
 		setMessageState((state) => ({
 			...state,
