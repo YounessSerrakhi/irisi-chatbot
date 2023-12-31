@@ -1,140 +1,104 @@
-"use client";
+'use client';
+import { useEffect, useState } from 'react';
+import '@/assets/css/main.css';
+import { useRouter } from 'next/navigation';
 
-import { useRef, useState } from "react";
-import { Document } from "langchain/document";
-import { Message } from "@/types/message.type";
-import { BotForm } from "@/components/bot-form";
-import { ChatMessages } from "@/components/chat-messages";
+export default function UploadForm() {
+	const [file, setFile] = useState<File | null>(null);
+	const [isUploaded, setIsUploaded] = useState<Boolean>(false);
+	const [loading , setLoading] = useState<Boolean>(false);
+    const router = useRouter();
 
-export default function Home() {
-	const [query, setQuery] = useState<string>("");
-	const [loading, setLoading] = useState<boolean>(false);
-	const [error, setError] = useState<string | null>(null);
-	const [messageState, setMessageState] = useState<{
-		messages: Message[];
-		pending?: string;
-		history: [string, string][];
-		pendingSourceDocs?: Document[];
-	}>({
-		messages: [
-			{
-				message: "Hi, what would you like to learn about this document?",
-				type: "botMessage",
-			},
-		],
-		history: [],
-	});
-
-	const { messages, history } = messageState;
-
-	const messageListRef = useRef<HTMLDivElement>(null);
-
-	//handle form submission
-	async function handleSubmit(e: any) {
+	const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		setError(null);
-
-		if (!query) {
-			alert("Please input a question");
-			return;
-		}
-
-		const question = query.trim();
-		console.log("question++++++", question);
-
-		setMessageState((state) => ({
-			...state,
-			messages: [
-				...state.messages,
-				{
-					type: "userMessage",
-					message: question,
-				},
-			],
-		}));
-
-		setLoading(true);
-		setQuery("");
+		if (!file) return;
 
 		try {
-			const response = await fetch("/api/chat", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					question,
-					history,
-				}),
+			const formData = new FormData();
+			formData.append('file', file);
+
+			const res = await fetch('/api/upload', {
+				method: 'POST',
+				body: formData,
 			});
-			const data = await response.json();
-			console.log("data", data);
 
-			if (data.error) {
-				setError(data.error);
-			} else {
-				setMessageState((state) => ({
-					...state,
-					messages: [
-						...state.messages,
-						{
-							type: "botMessage",
-							message: data.text,
-							sourceDocs: data.sourceDocuments,
-						},
-					],
-					history: [...state.history, [question, data.text]],
-				}));
+			// handle the error
+			if (!res.ok) {
+				throw new Error(await res.text());
 			}
-			console.log("messageState", messageState);
 
-			setLoading(false);
-
-			//scroll to bottom
-			messageListRef.current?.scrollTo(0, messageListRef.current.scrollHeight);
+			// Handle successful upload
+			setIsUploaded(true);
+			console.log('File uploaded successfully');
 		} catch (error) {
-			setLoading(false);
-			setError("An error occurred while fetching the data. Please try again.");
-			console.log("error", error);
-		}
-	}
-
-	//prevent empty submissions
-	const handleEnter = (e: any) => {
-		if (e.key === "Enter" && query) {
-			handleSubmit(e);
-		} else if (e.key == "Enter") {
-			e.preventDefault();
+			// Handle errors here
+			console.error(error);
 		}
 	};
 
+	useEffect(() => {
+
+	}, [isUploaded])
+
+
+	const hundleClick = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+
+		try {
+			setLoading(true);
+			const res = await fetch('/api/cmd', {
+				method: 'POST'
+			});
+
+			// handle the error
+			if (!res.ok) {
+				throw new Error(await res.text());
+			}
+            
+			console.log('command successfully executed');
+			setTimeout(() => {
+				router.push('/chat');
+			}, 20000);
+
+		} catch (error) {
+			// Handle errors here
+			console.error(error);
+			setTimeout(() => {
+				router.push('/chat');
+			}, 20000);
+		}
+	}
+
 	return (
-		<>
-			<div className="h-full w-10/12 mx-auto flex flex-col gap-4">
-				<h1 className="mt-4 text-2xl font-bold leading-[1.1] tracking-tighter text-center">
-					Chat With Your Docs
-				</h1>
-				<main className="h-full flex flex-col justify-between items-center p-1">
-					<ChatMessages
-						messageListRef={messageListRef}
-						messages={messages}
-						loading={loading}
-					/>
-					<BotForm
-						handleSubmit={handleSubmit}
-						handleEnter={handleEnter}
-						onChange={(value) => setQuery(value)}
-						query={query}
-						loading={loading}
-					/>
-					{error && (
-						<div className="border border-red-400 rounded-md p-4">
-							<p className="text-red-500">{error}</p>
-						</div>
-					)}
-				</main>
-			</div>
-		</>
+		<div className="container-upload" style={{ marginTop: "20px" }}>
+			<center>
+				<div>
+					<p className='upload-title'>START ASKING YOUR DOCUMENT</p>
+				</div>
+				<div className='mt-4'>
+					{
+						(!isUploaded) ?
+							<form onSubmit={onSubmit} className="form-upload">
+								<label className="drop-container" id="dropcontainer">
+									<span className="drop-title">Drop files here</span>
+									or
+									<input
+										type="file"
+										name="file"
+										onChange={(e) => setFile(e.target.files?.[0])}
+										required />
+								</label>
+								<><button className='button-63 m-2' type="submit">Upload</button></>
+							</form>
+							:
+							<button onClick={hundleClick} className='button-63 m-2' >Start Asking</button>
+					}
+				</div>
+				<div className='mt-3'>
+					{loading?<p className='upload-title'>Loading Data...</p>:''}
+				</div>
+			</center>
+		</div>
 	);
 }

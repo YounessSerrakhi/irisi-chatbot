@@ -101,9 +101,9 @@ export function BotForm({
   
 
   return (
-    <div className="relative flex flex-col justify-center items-center px-4">
+    <div  className="relative flex flex-col justify-center items-center px-4 ">
       <div className="relative">
-        <form onSubmit={(e) => handleSubmit(e)}>
+        <form  onSubmit={(e) => handleSubmit(e)}>
           <textarea
             disabled={loading}
             onKeyDown={handleEnter}
@@ -118,6 +118,7 @@ export function BotForm({
             }
             value={query}
             onChange={(e) => onChange(e.target.value)}
+            
             className="w-[75vw] relative resize-none text-base py-4 px-8 bg-white text-black outline-none border border-[#d9d9e3] rounded-lg"
           />
           <div className="absolute flex top-3.5 right-4 text-[#A5A2A2] space-x-2">
@@ -136,14 +137,14 @@ export function BotForm({
                     className={`p-1 ${isRecording ? 'text-red-500' : ''}`}
                   >
                     {isRecording ? (
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-mic-fill" viewBox="0 0 16 16">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" className="bi bi-mic-fill" viewBox="0 0 16 16">
                         <path d="M5 3a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0z" />
                         <path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5" />
                       </svg>
                     ) : (
-						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-mic-fill" viewBox="0 0 16 16">
-						<path d="M5 3a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0z" />
-						<path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5" />
+						<svg xmlns="http://www.w3.org/2000/svg" style={{color:"#000000"}} width="30" height="30" fill="currentColor" className="bi bi-mic-fill" viewBox="0 0 16 16">
+					  	<path d="M5 3a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0z" />
+						  <path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5" />
 					  </svg>
                     )}
                   </button>
@@ -155,7 +156,8 @@ export function BotForm({
                   >
                     <svg
                       viewBox="0 0 20 20"
-                      className="w-[1.2em] h-[1.2em] rotate-90 fill-current"
+                      width="30" height="30"
+                      className=" rotate-90 fill-current"
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
