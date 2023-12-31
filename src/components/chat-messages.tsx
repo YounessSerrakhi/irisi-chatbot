@@ -58,17 +58,17 @@ export function ChatMessages({ messages, loading, messageListRef }: Props) {
 	  
 
   return (
-    <div className="grow relative w-full">
-      <div ref={messageListRef} className="w-full h-full overflow-y-scroll rounded-lg">
+    <div style={{border:"1px solid #ffffff",boxShadow:"0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19)", padding:"5px" , marginBottom:"10px"}}  className="grow relative w-full">
+      <div ref={messageListRef} className="w-full h-full  rounded-lg">
         {messages.map((message, index) => {
           let icon;
           let voiceIcon = (
             <Image
               key={index}
-              src="/voice-icon.jpg"
+              src="/voice.svg"
               alt="Voice"
-              width="20"
-              height="20"
+              width="30"
+              height="30"
               priority
               onClick={() => speechResponse(message.message)}
               className="cursor-pointer"
@@ -79,42 +79,43 @@ export function ChatMessages({ messages, loading, messageListRef }: Props) {
             icon = (
               <Image
                 key={index}
-                src="/bot-image.png"
+                src="/robot.svg"
                 alt="AI"
-                width="40"
-                height="40"
+                width="20"
+                height="20"
+                className="msg-img"
                 priority
               />
             );
-            className += "bg-[#f9fafb] text-black p-6 animate-[fadein 0.5s]";
+            className += " text-black p-6 animate-[fadein 0.5s]";
           } else {
             icon = (
               <Image
                 key={index}
-                src="/usericon.png"
+                src="/person.svg"
                 alt="Me"
-                width="30"
-                height="30"
-                className="h-full mr-4 rounded-sm"
+                width="20"
+                height="20"
+                className="msg-img h-full mr-4 rounded-sm "
                 priority
               />
             );
             className +=
               loading && index === messages.length - 1
                 ? "usermessagewaiting"
-                : "bg-white text-black p-6";
+                : "text-black p-6";
           }
           return (
             <div key={`chatMessage-${index}`}>
               <div className={className}>
                 {icon}
-                <div className="leading-4">
+                <div className={(message.type === "botMessage")?"leading-4 msg-bot msg-bubble-bot" : "leading-4 msg-bot msg-bubble"}>
                   <ReactMarkdown>{message.message}</ReactMarkdown>
                 </div>
                 {message.type === "botMessage" && voiceIcon}
               </div>
               {message.sourceDocs && (
-                <div className="p-5" key={`sourceDocsAccordion-${index}`}>
+                <div className="p-5" style={{color:"#ffffff"}} key={`sourceDocsAccordion-${index}`}>
                   <Accordion type="single" collapsible className="flex-col">
                     {message.sourceDocs.map((doc: Document, index: number) => (
                       <div key={`messageSourceDocs-${index}`}>
@@ -124,7 +125,7 @@ export function ChatMessages({ messages, loading, messageListRef }: Props) {
                           </AccordionTrigger>
                           <AccordionContent>
                             <ReactMarkdown>{doc.pageContent}</ReactMarkdown>
-                            <p className="mt-2">
+                            <p className="mt-2" style={{color:"#ffffff"}}>
                               <b>Source:</b> {doc.metadata.source}
                             </p>
                           </AccordionContent>
